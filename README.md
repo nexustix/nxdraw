@@ -1,3 +1,3 @@
-C template project
+C library for prototyping games
 
-Things like the tools are subject to change and experimental, they might get split into their own project later
+heavily inspired by the olcPixelGameEngine
