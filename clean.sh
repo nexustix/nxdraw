@@ -1,4 +1,5 @@
 rm -r ./build/
 rm -r ./bin/
-rm -r ./lib/nxpixel
+rm -r ./lib/
+rm -r ./obj/
 rm Makefile
