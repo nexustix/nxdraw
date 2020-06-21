@@ -1,5 +1,5 @@
-#ifndef ENGINE_DRAW_H
-#define ENGINE_DRAW_H
+#ifndef NXDRAW_DRAW_H
+#define NXDRAW_DRAW_H
 
 #include "colour.h"
 #include "texture.h"
@@ -98,6 +98,16 @@ void draw_rectangle(Texture *texture, int x, int y, int w, int h,
   draw_line(texture, x + w, y + h, x, y + h, colour);
 }
 
+// FIXME use something like memcpy ?
+void draw_filled_rectangle(Texture *texture, int x, int y, int w, int h,
+                           Colour colour) {
+  for (int iy = y; iy < w + y; iy++) {
+    for (int ix = x; ix < h + x; ix++) {
+      draw_pixel(texture, ix, iy, colour);
+    }
+  }
+}
+
 void draw_triangle(Texture *texture, int x1, int y1, int x2, int y2, int x3,
                    int y3, Colour colour) {
   draw_line(texture, x1, y1, x2, y2, colour);
@@ -111,6 +121,86 @@ void draw_quad(Texture *texture, int x1, int y1, int x2, int y2, int x3, int y3,
   draw_line(texture, x2, y2, x3, y3, colour);
   draw_line(texture, x3, y3, x4, y4, colour);
   draw_line(texture, x4, y4, x1, y1, colour);
+}
+
+/*
+  adapted from:
+  http://www.sunshine2k.de/coding/java/TriangleRasterization/TriangleRasterization.html
+*/
+
+int draw_filled_triangle_bottom(Texture *target, int x1, int y1, int x2, int y2,
+                                int x3, int y3, Colour colour) {
+  float invslope1 = ((float)x2 - (float)x1) / ((float)y2 - (float)y1);
+  float invslope2 = ((float)x3 - (float)x1) / ((float)y3 - (float)y1);
+
+  float curx1 = x1;
+  float curx2 = x1;
+
+  for (int scanlineY = y1; scanlineY <= y2; scanlineY++) {
+    draw_line(target, (int)curx1, scanlineY, (int)curx2, scanlineY, colour);
+    curx1 += invslope1;
+    curx2 += invslope2;
+  }
+  return 0;
+}
+
+int draw_filled_triangle_top(Texture *target, int x1, int y1, int x2, int y2,
+                             int x3, int y3, Colour colour) {
+  float invslope1 = ((float)x3 - (float)x1) / ((float)y3 - (float)y1);
+  float invslope2 = ((float)x3 - (float)x2) / ((float)y3 - (float)y2);
+
+  float curx1 = x3;
+  float curx2 = x3;
+
+  for (int scanlineY = y3; scanlineY >= y1; scanlineY--) {
+    draw_line(target, (int)curx1, scanlineY, (int)curx2, scanlineY, colour);
+    curx1 -= invslope1;
+    curx2 -= invslope2;
+  }
+  return 0;
+}
+
+int draw_filled_triangle(Texture *target, int x1, int y1, int x2, int y2,
+                         int x3, int y3, Colour colour) {
+
+  int t;
+  if (y1 > y2) {
+    t = y1;
+    y1 = y2;
+    y2 = t;
+    t = x1;
+    x1 = x2;
+    x2 = t;
+  }
+  if (y1 > y3) {
+    t = y1;
+    y1 = y3;
+    y3 = t;
+    t = x1;
+    x1 = x3;
+    x3 = t;
+  }
+  if (y2 > y3) {
+    t = y2;
+    y2 = y3;
+    y3 = t;
+    t = x2;
+    x2 = x3;
+    x3 = t;
+  }
+
+  if (y2 == y3) {
+    draw_filled_triangle_bottom(target, x1, y1, x2, y2, x3, y3, colour);
+  } else if (y1 == y2) {
+    draw_filled_triangle_top(target, x1, y1, x2, y2, x3, y3, colour);
+  } else {
+    // fallback, split triangle in a top-flat and bottom-flat daw calls
+    int x4 = (int)(x1 + ((float)(y2 - y1) / (float)(y3 - y1)) * (x3 - x1));
+    int y4 = y2;
+    draw_filled_triangle_bottom(target, x1, y1, x2, y2, x4, y4, colour);
+    draw_filled_triangle_top(target, x2, y2, x4, y4, x3, y3, colour);
+  }
+  return 0;
 }
 
 #endif

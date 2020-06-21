@@ -1,5 +1,5 @@
-#ifndef ENGINE_IMAGE_H
-#define ENGINE_IMAGE_H
+#ifndef NXDRAW_IMAGE_H
+#define NXDRAW_IMAGE_H
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "texture.h"

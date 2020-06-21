@@ -1,5 +1,5 @@
-#ifndef ENGINE_COLOUR_H
-#define ENGINE_COLOUR_H
+#ifndef NXDRAW_COLOUR_H
+#define NXDRAW_COLOUR_H
 
 #include <stdint.h>
 

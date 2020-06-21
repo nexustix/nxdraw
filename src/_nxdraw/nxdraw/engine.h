@@ -1,5 +1,5 @@
-#ifndef ENGINE_ENGINE_H
-#define ENGINE_ENGINE_H
+#ifndef NXDRAW_ENGINE_H
+#define NXDRAW_ENGINE_H
 
 #include <GLFW/glfw3.h>
 #include <stdio.h>
@@ -15,6 +15,7 @@
 //#include "callback.h"
 
 void _engine_on_update(double dt) {
+  /*
   static double counter = 0.0;
   static int fps;
   fps = (int)(1.0 / dt);
@@ -24,9 +25,11 @@ void _engine_on_update(double dt) {
     printf("%i\n", fps);
     counter = 0;
   }
+  */
 }
 
 void _engine_on_draw(Texture *screen) {
+  /*
   static int count = 0;
   static Colour cake;
 
@@ -43,6 +46,7 @@ void _engine_on_draw(Texture *screen) {
       }
     }
   }
+  */
 }
 
 typedef struct {
@@ -77,7 +81,10 @@ Engine *newEngine(int winW, int winH, int texW, int texH) {
 
   self->tex = newTexture(self->texWidth, self->texHeight);
 
-  self->title = "testing";
+  self->title = "nxdraw test";
+
+  self->on_update = _engine_on_update;
+  self->on_draw = _engine_on_draw;
   // engine_init(self);
   return self;
 }
@@ -129,8 +136,8 @@ int engine_init(Engine *self, int resizable) {
 
   // glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE );
   // glfwWindowHint(GLFW_REFRESH_RATE, 60);
-  // glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 1);
-  // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 1);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 
   self->window = glfwCreateWindow(self->screenWidth, self->screenHeight,
                                   self->title, NULL, NULL);
@@ -144,8 +151,8 @@ int engine_init(Engine *self, int resizable) {
   glfwSetCharCallback(self->window, self->callback_text_input);
   glfwSetCursorPosCallback(self->window, self->callback_cursor_position);
 
-  self->on_update = _engine_on_update;
-  self->on_draw = _engine_on_draw;
+  // self->on_update = _engine_on_update;
+  // self->on_draw = _engine_on_draw;
 
   // Texture* cake = image_load_png("kprey.png");
   // if (cake != NULL){

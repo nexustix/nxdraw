@@ -49,7 +49,7 @@ project "nxdrawdemo"
 
     links { "nxdraw" }
 
-    files { "./src/nxdraw/**.h", "./src/nxdraw/**.c" }
+    files { "./src/nxdrawdemo/**.h", "./src/nxdrawdemo/**.c" }
     links { "GL", "glfw", "m"}
 
     filter "configurations:Debug"

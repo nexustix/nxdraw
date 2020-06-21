@@ -1,5 +1,5 @@
-#ifndef ENGINE_SPRITE_H
-#define ENGINE_SPRITE_H
+#ifndef NXDRAW_SPRITE_H
+#define NXDRAW_SPRITE_H
 
 #include "colour.h"
 #include <stdlib.h>
@@ -64,8 +64,7 @@ void texture_put_pixel_alpha(Texture *self, int x, int y, Colour colour) {
 //
 //}
 
-void texture_stamp(Texture *target, Texture *source, int tx, int ty,
-                   int scale) {
+void texture_blit(Texture *target, Texture *source, int tx, int ty, int scale) {
 
   if (target == NULL) {
     return;
@@ -89,6 +88,18 @@ void texture_stamp(Texture *target, Texture *source, int tx, int ty,
         texture_put_pixel_alpha(target, tx + h, ty + w,
                                 texture_get_pixel(source, w, h));
       }
+    }
+  }
+}
+
+//
+void texture_fill(Texture *self, Colour colour) {
+  // FIXME iterates over every pixel and is therefore extremely wasteful
+  // use memcpy ?
+  // use a second "empty buffer" and bulk copy ? (wastes memory)
+  for (int y = 0; y < self->height; y++) {
+    for (int x = 0; x < self->width; x++) {
+      texture_set_pixel(self, x, y, colour);
     }
   }
 }
