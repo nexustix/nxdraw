@@ -10,6 +10,7 @@
 #include "../event.h"
 #include "../event_bridge.h"
 #include "../event_buffer.h"
+#include "nxdraw/fonts/ascii/thin.h"
 
 //#include <GLFW/glfw3.h>
 
@@ -113,10 +114,19 @@ int nxdraw_blit(NxdrawTexture *target, int x, int y, NxdrawTexture *source) {
 }
 
 // put text onto screen
-// int putchar_ascii(NxdrawTexture *target, int x, int y, NxdrawColour fg,
-// NxdrawColour bg) {
-//  return 0;
-//}
+int nxdraw_printchar_ascii(NxdrawTexture *target, int x, int y, unsigned char c,
+                           NxdrawColour fg, NxdrawColour bg) {
+  nxdraw_draw_bitmap_8_8(target, x, y, ascii_thin[c], fg, bg);
+  return 0;
+}
+
+int nxdraw_printstring_ascii(NxdrawTexture *target, int x, int y, char *str,
+                             NxdrawColour fg, NxdrawColour bg) {
+  for (int i = 0; i < strlen(str); i++) {
+    nxdraw_printchar_ascii(target, x + (8 * i), y, str[i], fg, bg);
+  }
+  return 0;
+}
 
 // FIXME limit FPS, implementation currently uses vsync
 double nxdraw_limit(int fps_target) {

@@ -27,6 +27,32 @@ void nxdraw_draw_vline(NxdrawTexture *texture, int x1, int y1, int h,
   }
 }
 
+void nxdraw_draw_runepixel_8_8(NxdrawTexture *texture, int ox, int oy,
+                               int offset, NxdrawColour colour) {
+  int x = offset % 8;
+  int y = offset / 8;
+  // printf(">> %li %li %li\n", offset, x, y);
+  nxdraw_draw_pixel(texture, x + ox, y + oy, colour);
+}
+
+void nxdraw_draw_bitmap_8_8(NxdrawTexture *texture, int x, int y,
+                            long long bitmap, NxdrawColour fg,
+                            NxdrawColour bg) {
+  // printf("---\n");
+  long long mask = 1;
+  for (long long i = 0; i < 64; i++) {
+    mask = mask << 1;
+    // printf("[>> %li %li\n", i, mask);
+    long long p = bitmap & mask;
+    if (p) {
+      nxdraw_draw_runepixel_8_8(texture, x, y, 63 - i, fg);
+    } else {
+      nxdraw_draw_runepixel_8_8(texture, x, y, 63 - i, bg);
+    }
+  }
+  // printf("---\n");
+}
+
 void nxdraw_draw_line(NxdrawTexture *texture, int x1, int y1, int x2, int y2,
                       NxdrawColour colour) {
   int i, dx, dy, sdx, sdy, dxabs, dyabs, x, y, px, py;

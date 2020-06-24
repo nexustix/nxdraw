@@ -99,10 +99,15 @@ int blit(NxdrawTexture *target, int x, int y, NxdrawTexture *source) {
 }
 
 // put text onto screen
-// int putchar_ascii(NxdrawTexture *target, int x, int y, NxdrawColour fg,
-// NxdrawColour bg) {
-//  return 0;
-//}
+int printchar_ascii(NxdrawTexture *target, int x, int y, char c,
+                    NxdrawColour fg, NxdrawColour bg) {
+  return nxdraw_printchar_ascii(target, x, y, c, fg, bg);
+}
+
+int printstring_ascii(NxdrawTexture *target, int x, int y, char *str,
+                      NxdrawColour fg, NxdrawColour bg) {
+  return nxdraw_printstring_ascii(target, x, y, str, fg, bg);
+}
 
 // FIXME limit FPS, implementation currently uses vsync
 double limit(int fps_target) { return nxdraw_limit(fps_target); }

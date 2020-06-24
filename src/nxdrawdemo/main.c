@@ -5,6 +5,7 @@
 //        8 16    32          64
 
 #include "nxdraw/api/graphics.h"
+//#include "nxdraw/api/prefix_graphics.h"
 #include "nxdraw/colour.h"
 #include "nxdraw/engine.h"
 #include <stdio.h>
@@ -49,6 +50,18 @@ int main(int argc, const char *argv[]) {
       circle(engine->tex, mx, my, 3, COLOUR_WHITE);
     }
     // rectangle(engine->tex, mx, my, 3, 3, COLOUR_WHITE);
+
+    printstring_ascii(engine->tex, 20, 20 + (8 * 0),
+                      "the quick brown fox jumps over the", COLOUR_AMBER,
+                      COLOUR_NONE);
+    printstring_ascii(engine->tex, 20, 20 + (8 * 2),
+                      "lazy dog THE QUICK BROWN FOX JUMPS", COLOUR_AMBER,
+                      COLOUR_NONE);
+    printstring_ascii(engine->tex, 20, 20 + (8 * 4),
+                      "OVER THE LAZY DOG -+*/,.\\?!{}()[]", COLOUR_AMBER,
+                      COLOUR_NONE);
+    printstring_ascii(engine->tex, 20, 20 + (8 * 6), "@#$%^&~|'\"';:<>",
+                      COLOUR_AMBER, COLOUR_NONE);
 
     e = poll_event(engine);
     while (e.kind) {
