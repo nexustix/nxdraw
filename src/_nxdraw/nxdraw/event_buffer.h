@@ -26,7 +26,7 @@ NxdrawEventBuffer *newEventBuffer(size_t size) {
   return self;
 }
 
-void event_buffer_push_event(NxdrawEventBuffer *self, NxdrawEvent e) {
+void nxdraw_event_buffer_push_event(NxdrawEventBuffer *self, NxdrawEvent e) {
   if (self->draining) {
     self->next = 0;
     self->head = 0;
@@ -41,7 +41,7 @@ void event_buffer_push_event(NxdrawEventBuffer *self, NxdrawEvent e) {
   self->next += 1;
 }
 
-NxdrawEvent event_buffer_pop_event(NxdrawEventBuffer *self) {
+NxdrawEvent nxdraw_event_buffer_pop_event(NxdrawEventBuffer *self) {
   assert(self);
   self->draining = 1;
   // printf("%i %i\n", self->next, self->head);

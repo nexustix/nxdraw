@@ -13,11 +13,11 @@ typedef struct {
       uint8_t a;
     };
   };
-} Colour;
+} NxdrawColour;
 
-Colour makeColour(unsigned char r, unsigned char g, unsigned char b,
-                  unsigned char a) {
-  Colour self;
+NxdrawColour makeNxdrawColour(unsigned char r, unsigned char g, unsigned char b,
+                              unsigned char a) {
+  NxdrawColour self;
 
   self.r = r;
   self.g = g;
@@ -27,8 +27,9 @@ Colour makeColour(unsigned char r, unsigned char g, unsigned char b,
   return self;
 }
 
-Colour makeColour_opaque(unsigned char r, unsigned char g, unsigned char b) {
-  Colour self;
+NxdrawColour makeNxdrawColour_opaque(unsigned char r, unsigned char g,
+                                     unsigned char b) {
+  NxdrawColour self;
 
   self.r = r;
   self.g = g;
@@ -38,10 +39,10 @@ Colour makeColour_opaque(unsigned char r, unsigned char g, unsigned char b) {
   return self;
 }
 
-const Colour COLOUR_BLACK = {{0xff000000}};
-const Colour COLOUR_WHITE = {{0xffffffff}};
-const Colour COLOUR_RED = {{0xff0000ff}};
-const Colour COLOUR_GREEN = {{0xff00ff00}};
-const Colour COLOUR_BLUE = {{0xffff0000}};
+const NxdrawColour COLOUR_BLACK = {{0xff000000}};
+const NxdrawColour COLOUR_WHITE = {{0xffffffff}};
+const NxdrawColour COLOUR_RED = {{0xff0000ff}};
+const NxdrawColour COLOUR_GREEN = {{0xff00ff00}};
+const NxdrawColour COLOUR_BLUE = {{0xffff0000}};
 
 #endif

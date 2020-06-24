@@ -4,16 +4,16 @@
 // 00001:E0 80 EA 2A EE 0A 0A 00
 //        8 16    32          64
 
+#include "nxdraw/api/graphics.h"
 #include "nxdraw/colour.h"
 #include "nxdraw/engine.h"
-#include "nxdraw/graphics.h"
 #include <stdio.h>
 
 int main(int argc, const char *argv[]) {
   double dt;
-  Engine *engine = graphics(320 * 4, 200 * 4, 320, 200);
+  NxdrawEngine *engine = graphics(320 * 4, 200 * 4, 320, 200);
   NxdrawEvent e;
-  Texture *cake = load_image("assets/floor_a.png");
+  NxdrawTexture *cake = load_image("assets/floor_a.png");
   double x = 10;
   unsigned int mx = 0;
   unsigned int my = 0;
@@ -97,9 +97,9 @@ void on_update(double dt) {
 }
 
 
-void on_draw(Texture *screen) {
+void on_draw(NxdrawTexture *screen) {
   static int count = 0;
-  static Colour cake;
+  static NxdrawColour cake;
 
   count += 1;
 
@@ -118,8 +118,8 @@ void on_draw(Texture *screen) {
 
 
 int main(int argc, const char *argv[]) {
-  // Engine *engine = newEngine(320 * 4, 200 * 4, 320, 200);
-  Engine *engine = newEngine(320, 200, 320, 200);
+  // NxdrawEngine *engine = newNxdrawEngine(320 * 4, 200 * 4, 320, 200);
+  NxdrawEngine *engine = newNxdrawEngine(320, 200, 320, 200);
   engine_init(engine, 0);
   engine->on_draw = on_draw;
   engine->on_update = on_update;

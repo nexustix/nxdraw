@@ -8,20 +8,21 @@ typedef struct {
   int width;
   int height;
   // unsigned char(*data);
-  Colour(*data);
-} Texture;
+  NxdrawColour(*data);
+} NxdrawTexture;
 
-Texture *newTexture(int width, int height) {
-  Texture *self = (Texture *)calloc(1, sizeof(*self));
+NxdrawTexture *newNxdrawTexture(int width, int height) {
+  NxdrawTexture *self = (NxdrawTexture *)calloc(1, sizeof(*self));
   self->width = width;
   self->height = height;
-  self->data = (Colour *)calloc(self->width * self->height * 1, sizeof(Colour));
+  self->data = (NxdrawColour *)calloc(self->width * self->height * 1,
+                                      sizeof(NxdrawColour));
   return self;
 }
 
-// void texture_put_pixel(Texture *self, int x, int y, unsigned char r, unsigned
-// char g, unsigned char b, unsigned char a) void texture_put_pixel(Texture
-// *self, int x, int y, Colour colour)
+// void texture_put_pixel(NxdrawTexture *self, int x, int y, unsigned char r,
+// unsigned char g, unsigned char b, unsigned char a) void
+// texture_put_pixel(NxdrawTexture *self, int x, int y, NxdrawColour colour)
 //{
 //    if (x < self->width && y < self->height)
 //    {
@@ -29,22 +30,23 @@ Texture *newTexture(int width, int height) {
 //    }
 //}
 
-void texture_set_pixel(Texture *self, int x, int y, Colour colour) {
+void texture_set_pixel(NxdrawTexture *self, int x, int y, NxdrawColour colour) {
   if (x < self->width && y < self->height && x >= 0 && y >= 0) {
     self->data[self->width * y + x] = colour;
   }
 }
 
-Colour texture_get_pixel(Texture *self, int x, int y) {
+NxdrawColour texture_get_pixel(NxdrawTexture *self, int x, int y) {
   if (x < self->width && y < self->height && x >= 0 && y >= 0) {
     return self->data[self->width * y + x];
   }
-  return (Colour){0x00000000};
+  return (NxdrawColour){0x00000000};
 }
 
-void texture_put_pixel_alpha(Texture *self, int x, int y, Colour colour) {
+void texture_put_pixel_alpha(NxdrawTexture *self, int x, int y,
+                             NxdrawColour colour) {
   if (x < self->width && y < self->height && x >= 0 && y >= 0) {
-    Colour d = texture_get_pixel(self, x, y);
+    NxdrawColour d = texture_get_pixel(self, x, y);
     // turn alpha to 0.0 1.0 range
     float a = (float)(colour.a / 255.0f);
     // flip alpha
@@ -54,17 +56,18 @@ void texture_put_pixel_alpha(Texture *self, int x, int y, Colour colour) {
     float g = a * (float)colour.g + c * (float)d.g;
     float b = a * (float)colour.b + c * (float)d.b;
     texture_set_pixel(self, x, y,
-                      makeColour((unsigned char)r, (unsigned char)g,
-                                 (unsigned char)b, (unsigned char)a));
+                      makeNxdrawColour((unsigned char)r, (unsigned char)g,
+                                       (unsigned char)b, (unsigned char)a));
   }
 }
 
-// void texture_blit(Texture *self, Texture *target, int sx, int sy, int sw, int
-// sh, int tx, int ty, int tw, int th){
+// void texture_blit(NxdrawTexture *self, NxdrawTexture *target, int sx, int sy,
+// int sw, int sh, int tx, int ty, int tw, int th){
 //
 //}
 
-void texture_blit(Texture *target, Texture *source, int tx, int ty, int scale) {
+void texture_blit(NxdrawTexture *target, NxdrawTexture *source, int tx, int ty,
+                  int scale) {
 
   if (target == NULL) {
     return;
@@ -93,7 +96,7 @@ void texture_blit(Texture *target, Texture *source, int tx, int ty, int scale) {
 }
 
 //
-void texture_fill(Texture *self, Colour colour) {
+void texture_fill(NxdrawTexture *self, NxdrawColour colour) {
   // FIXME iterates over every pixel and is therefore extremely wasteful
   // use memcpy ?
   // use a second "empty buffer" and bulk copy ? (wastes memory)

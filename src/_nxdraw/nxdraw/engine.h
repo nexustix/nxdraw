@@ -15,40 +15,9 @@
 
 //#include "callback.h"
 
-void _engine_on_update(double dt) {
-  /*
-  static double counter = 0.0;
-  static int fps;
-  fps = (int)(1.0 / dt);
-  counter = counter + dt;
+void _nxdraw_engine_on_update(double dt) {}
 
-  if (counter >= 0.5) {
-    printf("%i\n", fps);
-    counter = 0;
-  }
-  */
-}
-
-void _engine_on_draw(Texture *screen) {
-  /*
-  static int count = 0;
-  static Colour cake;
-
-  count += 1;
-
-  for (int x = 0; x < screen->width; x++) {
-    for (int y = 0; y < screen->height; y++) {
-      for (int z = 0; z < 4; z++) {
-
-        cake.r = (x % 256);
-        cake.g = (y % 256);
-        cake.b = (x + y - count) % 256;
-        texture_set_pixel(screen, x, y, cake);
-      }
-    }
-  }
-  */
-}
+void _nxdraw_engine_on_draw(NxdrawTexture *screen) {}
 
 typedef struct {
   GLFWwindow *window;
@@ -60,75 +29,32 @@ typedef struct {
   unsigned int texHeight;
   double pixelWidth;
   double pixelHeight;
-  // unsigned char(*tex);
-  Texture *tex;
-  // Texture *stamp;
+  NxdrawTexture *tex;
+  // NxdrawTexture *stamp;
   // int (*on_event)(Event event);
   void (*on_update)(double dt);
-  void (*on_draw)(Texture *screen);
-  /*
-  void (*callback_window_size)(GLFWwindow *window, int width, int height);
-  void (*callback_key)(GLFWwindow *window, int key, int scancode, int action,
-                       int mods);
-  void (*callback_text_input)(GLFWwindow *window, unsigned int codepoint);
-  void (*callback_cursor_position)(GLFWwindow *window, double xpos,
-                                   double ypos);
-                                   */
-} Engine;
+  void (*on_draw)(NxdrawTexture *screen);
+} NxdrawEngine;
 
-Engine *newEngine(int winW, int winH, int texW, int texH) {
-  // Engine *self = malloc(sizeof(*self));
-  Engine *self = (Engine *)calloc(1, sizeof(*self));
+NxdrawEngine *newNxdrawEngine(int winW, int winH, int texW, int texH) {
+  // NxdrawEngine *self = malloc(sizeof(*self));
+  NxdrawEngine *self = (NxdrawEngine *)calloc(1, sizeof(*self));
   self->screenWidth = winW;
   self->screenHeight = winH;
   self->texWidth = texW;
   self->texHeight = texH;
 
-  self->tex = newTexture(self->texWidth, self->texHeight);
+  self->tex = newNxdrawTexture(self->texWidth, self->texHeight);
 
   self->title = "nxdraw test";
 
-  self->on_update = _engine_on_update;
-  self->on_draw = _engine_on_draw;
+  self->on_update = _nxdraw_engine_on_update;
+  self->on_draw = _nxdraw_engine_on_draw;
   // engine_init(self);
   return self;
 }
 
-/*
-void engine_testdraw(Engine *self)
-{
-    static int count = 0;
-    static Colour cake;
-
-    count += 1;
-
-    for (int x = 0; x < self->texWidth; x++)
-    {
-        for (int y = 0; y < self->texHeight; y++)
-        {
-            for (int z = 0; z < 4; z++)
-            {
-
-                cake.r = (x % 256);
-                cake.g = (y % 256);
-                cake.b = (x + y - count) % 256;
-                texture_set_pixel(self->tex, x, y, cake);
-            }
-        }
-    }
-
-    draw_line(self->tex, 3, 1, 1, 3, COLOUR_WHITE);
-    draw_line(self->tex, 64, 64, 128, 100, COLOUR_WHITE);
-    draw_circle(self->tex, 32, 32, 8, 0377, COLOUR_WHITE);
-    draw_rectangle(self->tex, 16, 16, 8, 8, COLOUR_WHITE);
-    draw_triangle(self->tex, 10,10, 20,20, 10, 20, COLOUR_WHITE);
-
-    //texture_stamp(self->stamp, self->tex, 3,3,1);
-    //texture_stamp(self->tex, self->stamp, (count)%(self->texWidth), 48,1);
-}
-*/
-
-int engine_init(Engine *self, int resizable) {
+int nxdraw_engine_init(NxdrawEngine *self, int resizable) {
 
   if (!glfwInit())
     return -1;
@@ -151,28 +77,11 @@ int engine_init(Engine *self, int resizable) {
     return -1;
   }
 
-  /*
-  glfwSetWindowSizeCallback(self->window, self->callback_window_size);
-  glfwSetKeyCallback(self->window, self->callback_key);
-  glfwSetCharCallback(self->window, self->callback_text_input);
-  glfwSetCursorPosCallback(self->window, self->callback_cursor_position);
-  */
-  event_bridge_init();
-  glfwSetKeyCallback(self->window, event_bridge_key);
-  glfwSetCharCallback(self->window, event_bridge_character);
-  glfwSetCursorPosCallback(self->window, event_bridge_mousepos);
-  glfwSetMouseButtonCallback(self->window, event_bridge_mousebutton);
-
-  // self->on_update = _engine_on_update;
-  // self->on_draw = _engine_on_draw;
-
-  // Texture* cake = image_load_png("kprey.png");
-  // if (cake != NULL){
-  //    self->stamp = cake;
-  //}else{
-  //    self->stamp = newTexture(16,16);
-  //    draw_triangle(self->stamp, 1,1,14,14,1,14, COLOUR_GREEN);
-  //}
+  nxdraw_event_bridge_init();
+  glfwSetKeyCallback(self->window, nxdraw_event_bridge_key);
+  glfwSetCharCallback(self->window, nxdraw_event_bridge_character);
+  glfwSetCursorPosCallback(self->window, nxdraw_event_bridge_mousepos);
+  glfwSetMouseButtonCallback(self->window, nxdraw_event_bridge_mousebutton);
 
   glfwMakeContextCurrent(self->window);
 
@@ -189,7 +98,7 @@ int engine_init(Engine *self, int resizable) {
   return 0;
 }
 
-void engine_draw(Engine *self) {
+void nxdraw_engine_draw(NxdrawEngine *self) {
   // FIXME put into screen resolution change handler
   self->pixelWidth = (double)self->screenWidth / (double)self->texWidth;
   self->pixelHeight = (double)self->screenHeight / (double)self->texHeight;
@@ -223,40 +132,24 @@ void engine_draw(Engine *self) {
   // glFlush();
 }
 
-void engine_tick(Engine *self) {
+void nxdraw_engine_tick(NxdrawEngine *self) {
   static double lastTime = 0;
   static double dt = 0;
   static double nowTime = 0;
-  // static int fps = 0;
-
-  // static double counter = 0.0;
-
-  // counter = counter + dt;
 
   nowTime = glfwGetTime();
   dt = (nowTime - lastTime);
   lastTime = nowTime;
 
-  /*
-  fps = (int)(1.0 / dt);
-
-  //printf("%f\n", dt);
-  if (counter >= 0.5)
-  {
-      printf("%i\n", fps);
-      counter = 0;
-  }
-  */
-
   self->on_update(dt);
-  engine_draw(self);
+  nxdraw_engine_draw(self);
 
   glfwPollEvents();
 }
 
-void engine_run(Engine *self) {
+void nxdraw_engine_run(NxdrawEngine *self) {
   while (!glfwWindowShouldClose(self->window)) {
-    engine_tick(self);
+    nxdraw_engine_tick(self);
   }
 
   glfwTerminate();
