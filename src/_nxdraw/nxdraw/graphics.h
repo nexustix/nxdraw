@@ -4,7 +4,12 @@
 #include "colour.h"
 #include "draw.h"
 #include "engine.h"
+#include "image.h"
 #include "texture.h"
+
+#include "event.h"
+#include "event_bridge.h"
+#include "event_buffer.h"
 
 //#include <GLFW/glfw3.h>
 
@@ -34,6 +39,14 @@ int line(Texture *target, int x1, int y1, int x2, int y2, Colour colour) {
   draw_line(target, x1, y1, x2, y2, colour);
   return 0;
 }
+int hline(Texture *target, int x1, int y1, int w, Colour colour) {
+  draw_hline(target, x1, y1, w, colour);
+  return 0;
+}
+int vline(Texture *target, int x1, int y1, int h, Colour colour) {
+  draw_vline(target, x1, y1, h, colour);
+  return 0;
+}
 
 // draw rectangle
 int rectangle(Texture *target, int x, int y, int w, int h, Colour colour) {
@@ -48,7 +61,10 @@ int rectangleb(Texture *target, int x, int y, int w, int h, Colour colour) {
 }
 
 // draw circle
-// int circ() { return 0; }
+int circle(Texture *target, int x, int y, int r, Colour colour) {
+  draw_filled_circle(target, x, y, r, 0xff, colour);
+  return 0;
+}
 
 // draw cicrle border
 int circleb(Texture *target, int x, int y, int r, Colour colour) {
@@ -78,6 +94,8 @@ int clear(Texture *target, Colour colour) {
 
 // draw textured triangle
 // int textriangle() { return 0; }
+
+Texture *load_image(const char *path) { return image_load_png(path); }
 
 // blit texture
 int blit(Texture *target, int x, int y, Texture *source) {
@@ -109,5 +127,14 @@ int show(Engine *engine) {
 }
 
 int running(Engine *engine) { return !glfwWindowShouldClose(engine->window); }
+
+NxdrawEvent poll_event(Engine *engine) {
+  NxdrawEvent e = event_bridge_pop();
+  if (e.kind == NXDRAW_EVENT_MOUSE_MOVE) {
+    e.x = e.x / engine->pixelWidth;
+    e.y = e.y / engine->pixelHeight;
+  }
+  return e;
+}
 
 #endif

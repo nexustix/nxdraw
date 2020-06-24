@@ -1,5 +1,10 @@
-#include "nxdraw/colour.h"
+
 //#include "nxdraw/draw.h"
+//#include "nxdraw/image.h"
+// 00001:E0 80 EA 2A EE 0A 0A 00
+//        8 16    32          64
+
+#include "nxdraw/colour.h"
 #include "nxdraw/engine.h"
 #include "nxdraw/graphics.h"
 #include <stdio.h>
@@ -7,15 +12,68 @@
 int main(int argc, const char *argv[]) {
   double dt;
   Engine *engine = graphics(320 * 4, 200 * 4, 320, 200);
+  NxdrawEvent e;
+  Texture *cake = load_image("assets/floor_a.png");
+  double x = 10;
+  unsigned int mx = 0;
+  unsigned int my = 0;
+  int ms = 0;
 
   while (running(engine)) {
     dt = limit(60);
-    printf("%lf\n", 1 / dt);
+    // printf("%lf\n", 1 / dt);
+    // printf("%lfx%lf\n", engine->pixelWidth, engine->pixelHeight);
+    x = (x + dt * 100);
+
     clear(engine->tex, COLOUR_BLACK);
+
+    // pset(engine->tex, -100, -20, COLOUR_WHITE);
+
     rectangle(engine->tex, 10, 10, 10, 10, COLOUR_WHITE);
     rectangleb(engine->tex, 10, 10, 10, 10, COLOUR_RED);
+
+    circle(engine->tex, 40, 40, 8, COLOUR_WHITE);
+    circleb(engine->tex, 40, 40, 8, COLOUR_RED);
+
+    triangle(engine->tex, 100, 150, 50, 50, 20, 100, COLOUR_WHITE);
+    triangleb(engine->tex, 100, 150, 50, 50, 20, 100, COLOUR_RED);
+
     line(engine->tex, 10, 10, 40, 40, COLOUR_GREEN);
-    triangle(engine->tex, 100, 150, 50, 50, 20, 100, COLOUR_RED);
+    hline(engine->tex, 10, 100, 5, COLOUR_WHITE);
+    vline(engine->tex, 10, 100, 5, COLOUR_WHITE);
+
+    blit(engine->tex, ((int)x) % 320, 50, cake);
+    if (ms) {
+      circle(engine->tex, mx, my, 3, COLOUR_RED);
+    } else {
+      circle(engine->tex, mx, my, 3, COLOUR_WHITE);
+    }
+    // rectangle(engine->tex, mx, my, 3, 3, COLOUR_WHITE);
+
+    e = poll_event(engine);
+    while (e.kind) {
+      // printf("(%i)\n", e.kind);
+      /*
+      if (e.kind == NXDRAW_EVENT_KEY_DOWN) {
+        // printf("%i\n", e.key);
+      } else {
+        // printf("%i h\n", e.kind);
+        // printf("(%i) %i h\n", e.kind);
+      }
+      */
+      if (e.kind == NXDRAW_EVENT_MOUSE_MOVE) {
+        // printf("%lfx%lf\n", e.x, e.y);
+
+        // circle(engine->tex, (int)e.x, (int)e.y, 3, COLOUR_WHITE);
+        mx = (int)e.x;
+        my = (int)e.y;
+      } else if (e.kind == NXDRAW_EVENT_MOUSE_DOWN) {
+        ms = 1;
+      } else if (e.kind == NXDRAW_EVENT_MOUSE_UP) {
+        ms = 0;
+      }
+      e = poll_event(engine);
+    }
 
     show(engine);
   }

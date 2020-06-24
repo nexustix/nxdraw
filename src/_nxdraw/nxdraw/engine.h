@@ -10,6 +10,7 @@
 #include "texture.h"
 //#include "event.h"
 
+#include "event_bridge.h"
 #include "image.h"
 
 //#include "callback.h"
@@ -57,18 +58,22 @@ typedef struct {
   unsigned int texID;
   unsigned int texWidth;
   unsigned int texHeight;
+  double pixelWidth;
+  double pixelHeight;
   // unsigned char(*tex);
   Texture *tex;
   // Texture *stamp;
   // int (*on_event)(Event event);
   void (*on_update)(double dt);
   void (*on_draw)(Texture *screen);
+  /*
   void (*callback_window_size)(GLFWwindow *window, int width, int height);
   void (*callback_key)(GLFWwindow *window, int key, int scancode, int action,
                        int mods);
   void (*callback_text_input)(GLFWwindow *window, unsigned int codepoint);
   void (*callback_cursor_position)(GLFWwindow *window, double xpos,
                                    double ypos);
+                                   */
 } Engine;
 
 Engine *newEngine(int winW, int winH, int texW, int texH) {
@@ -146,10 +151,17 @@ int engine_init(Engine *self, int resizable) {
     return -1;
   }
 
+  /*
   glfwSetWindowSizeCallback(self->window, self->callback_window_size);
   glfwSetKeyCallback(self->window, self->callback_key);
   glfwSetCharCallback(self->window, self->callback_text_input);
   glfwSetCursorPosCallback(self->window, self->callback_cursor_position);
+  */
+  event_bridge_init();
+  glfwSetKeyCallback(self->window, event_bridge_key);
+  glfwSetCharCallback(self->window, event_bridge_character);
+  glfwSetCursorPosCallback(self->window, event_bridge_mousepos);
+  glfwSetMouseButtonCallback(self->window, event_bridge_mousebutton);
 
   // self->on_update = _engine_on_update;
   // self->on_draw = _engine_on_draw;
@@ -178,6 +190,10 @@ int engine_init(Engine *self, int resizable) {
 }
 
 void engine_draw(Engine *self) {
+  // FIXME put into screen resolution change handler
+  self->pixelWidth = (double)self->screenWidth / (double)self->texWidth;
+  self->pixelHeight = (double)self->screenHeight / (double)self->texHeight;
+
   glClear(GL_COLOR_BUFFER_BIT);
 
   // engine_testdraw(self);

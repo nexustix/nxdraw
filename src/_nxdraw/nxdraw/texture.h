@@ -30,20 +30,20 @@ Texture *newTexture(int width, int height) {
 //}
 
 void texture_set_pixel(Texture *self, int x, int y, Colour colour) {
-  if (x < self->width && y < self->height) {
+  if (x < self->width && y < self->height && x >= 0 && y >= 0) {
     self->data[self->width * y + x] = colour;
   }
 }
 
 Colour texture_get_pixel(Texture *self, int x, int y) {
-  if (x < self->width && y < self->height) {
+  if (x < self->width && y < self->height && x >= 0 && y >= 0) {
     return self->data[self->width * y + x];
   }
   return (Colour){0x00000000};
 }
 
 void texture_put_pixel_alpha(Texture *self, int x, int y, Colour colour) {
-  if (x < self->width && y < self->height) {
+  if (x < self->width && y < self->height && x >= 0 && y >= 0) {
     Colour d = texture_get_pixel(self, x, y);
     // turn alpha to 0.0 1.0 range
     float a = (float)(colour.a / 255.0f);
