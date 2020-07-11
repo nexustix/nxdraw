@@ -25,7 +25,8 @@ project "nxdraw"
     libdirs { "./trd/lib" }
     includedirs { "./trd/include" }
 
-    links { "GL", "glfw", "m"}
+    --links { "GL", "glfw", "m"}
+    
 
     files { "./src/_nxdraw/**.h", "./src/_nxdraw/**.c"}
 
@@ -39,6 +40,14 @@ project "nxdraw"
         defines { "NDEBUG" }
         optimize "On"
 
+
+    filter { "platforms:l64" }
+        links { "GL", "glfw", }--"m"}
+
+    filter { "platforms:w64" }
+        links { "opengl32", "glfw3", }--"m"}
+    
+
 project "nxdrawdemo"
     language "C"
     kind "WindowedApp"
@@ -50,7 +59,7 @@ project "nxdrawdemo"
     links { "nxdraw" }
 
     files { "./src/nxdrawdemo/**.h", "./src/nxdrawdemo/**.c" }
-    links { "GL", "glfw", "m"}
+    --links { "GL", "glfw", "m"}
 
     filter "configurations:Debug"
         defines { "DEBUG" }
@@ -60,3 +69,9 @@ project "nxdrawdemo"
     filter "configurations:Release"
         defines { "NDEBUG" }
         optimize "On"
+
+    filter { "platforms:l64" }
+        links { "GL", "glfw", }--"m"}
+
+    filter { "platforms:w64" }
+        links { "opengl32", "glfw3", }--"m"}
